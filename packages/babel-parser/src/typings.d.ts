@@ -17,7 +17,7 @@ export type Plugin =
   | "deprecatedImportAssert"
   | "doExpressions"
   | IF_BABEL_7<"dynamicImport">
-  | "explicitResourceManagement"
+  | IF_BABEL_7<"explicitResourceManagement">
   | "exportDefaultFrom"
   | IF_BABEL_7<"exportNamespaceFrom">
   | "flow"
@@ -49,6 +49,7 @@ export type Plugin =
 
 export type ParserPluginWithOptions =
   | ["decorators", DecoratorsPluginOptions]
+  | ["discardBinding", { syntaxType: "void" }]
   | ["estree", { classFeatures?: boolean }]
   | IF_BABEL_7<["importAttributes", { deprecatedAssertSyntax: boolean }]>
   | IF_BABEL_7<["moduleAttributes", { version: "may-2020" }]>
