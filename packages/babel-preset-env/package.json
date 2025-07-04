@@ -1,6 +1,6 @@
 {
   "name": "@babel/preset-env",
-  "version": "7.27.2",
+  "version": "7.28.0",
   "description": "A Babel preset for each environment.",
   "author": "The Babel Team (https://babel.dev/team)",
   "homepage": "https://babel.dev/docs/en/next/babel-preset-env",
@@ -43,6 +43,7 @@
     "@babel/plugin-transform-duplicate-keys": "workspace:^",
     "@babel/plugin-transform-duplicate-named-capturing-groups-regex": "workspace:^",
     "@babel/plugin-transform-dynamic-import": "workspace:^",
+    "@babel/plugin-transform-explicit-resource-management": "workspace:^",
     "@babel/plugin-transform-exponentiation-operator": "workspace:^",
     "@babel/plugin-transform-export-namespace-from": "workspace:^",
     "@babel/plugin-transform-for-of": "workspace:^",
@@ -80,10 +81,10 @@
     "@babel/plugin-transform-unicode-regex": "workspace:^",
     "@babel/plugin-transform-unicode-sets-regex": "workspace:^",
     "@babel/preset-modules": "0.1.6-no-external-plugins",
-    "babel-plugin-polyfill-corejs2": "condition:BABEL_8_BREAKING ? : ^0.4.10 (peer:@babel/core) (esm:default)",
-    "babel-plugin-polyfill-corejs3": "^0.11.0",
-    "babel-plugin-polyfill-regenerator": "condition:BABEL_8_BREAKING ? : ^0.6.1 (peer:@babel/core) (esm:default)",
-    "core-js-compat": "^3.40.0",
+    "babel-plugin-polyfill-corejs2": "condition:BABEL_8_BREAKING ? : ^0.4.14 (peer:@babel/core) (esm:default)",
+    "babel-plugin-polyfill-corejs3": "^0.13.0",
+    "babel-plugin-polyfill-regenerator": "condition:BABEL_8_BREAKING ? : ^0.6.5 (peer:@babel/core) (esm:default)",
+    "core-js-compat": "^3.43.0",
     "semver": "condition:BABEL_8_BREAKING ? ^7.3.4 : ^6.3.1"
   },
   "peerDependencies": {
