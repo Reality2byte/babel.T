@@ -200,7 +200,11 @@ export default abstract class StatementParser extends ExpressionParser {
     file: Undone<N.File>,
     program: Undone<N.Program>,
   ): N.File {
-    file.program = this.parseProgram(program);
+    file.program = this.parseProgram(
+      program,
+      tt.eof,
+      this.options.sourceType === "module" ? "module" : "script",
+    );
     file.comments = this.comments;
 
     if (this.optionFlags & OptionFlags.Tokens) {
@@ -217,8 +221,8 @@ export default abstract class StatementParser extends ExpressionParser {
   parseProgram(
     this: Parser,
     program: Undone<N.Program>,
-    end: TokenType = tt.eof,
-    sourceType: SourceType = this.options.sourceType,
+    end: TokenType,
+    sourceType: SourceType,
   ): N.Program {
     program.sourceType = sourceType;
     program.interpreter = this.parseInterpreterDirective();
@@ -322,8 +326,10 @@ export default abstract class StatementParser extends ExpressionParser {
         return false;
       }
     }
-    if (this.chStartsBindingIdentifier(nextCh, next)) {
-      this.expectPlugin("explicitResourceManagement");
+    if (
+      this.chStartsBindingIdentifier(nextCh, next) ||
+      this.isUnparsedContextual(next, "void")
+    ) {
       return true;
     }
     return false;
@@ -338,7 +344,6 @@ export default abstract class StatementParser extends ExpressionParser {
       next = this.nextTokenInLineStartSince(next + 5);
       const nextCh = this.codePointAtPos(next);
       if (this.chStartsBindingIdentifier(nextCh, next)) {
-        this.expectPlugin("explicitResourceManagement");
         return true;
       }
     }
@@ -563,7 +568,6 @@ export default abstract class StatementParser extends ExpressionParser {
         ) {
           break;
         }
-        this.expectPlugin("explicitResourceManagement");
         if (!this.allowsUsing()) {
           this.raise(Errors.UnexpectedUsingDeclaration, this.state.startLoc);
         } else if (!allowDeclaration) {
@@ -843,7 +847,7 @@ export default abstract class StatementParser extends ExpressionParser {
     if (this.eat(tt.parenL)) {
       const node = this.startNodeAt<N.CallExpression>(startLoc);
       node.callee = expr;
-      node.arguments = this.parseCallExpressionArguments(tt.parenR);
+      node.arguments = this.parseCallExpressionArguments();
       this.toReferencedList(node.arguments);
       return this.finishNode(node, "CallExpression");
     }
@@ -1615,6 +1619,10 @@ export default abstract class StatementParser extends ExpressionParser {
     if (kind === "using" || kind === "await using") {
       if (id.type === "ArrayPattern" || id.type === "ObjectPattern") {
         this.raise(Errors.UsingDeclarationHasBindingPattern, id.loc.start);
+      }
+    } else {
+      if (id.type === "VoidPattern") {
+        this.raise(Errors.UnexpectedVoidPattern, id.loc.start);
       }
     }
     this.checkLVal(
@@ -2594,8 +2602,8 @@ export default abstract class StatementParser extends ExpressionParser {
       this.match(tt._const) ||
       this.match(tt._var) ||
       this.isLet() ||
-      (this.hasPlugin("explicitResourceManagement") &&
-        (this.isUsing() || this.isAwaitUsing()))
+      this.isUsing() ||
+      this.isAwaitUsing()
     ) {
       throw this.raise(Errors.UnsupportedDefaultExport, this.state.startLoc);
     }
@@ -2704,16 +2712,14 @@ export default abstract class StatementParser extends ExpressionParser {
       }
     }
 
-    if (this.hasPlugin("explicitResourceManagement")) {
-      if (this.isUsing()) {
-        this.raise(Errors.UsingDeclarationExport, this.state.startLoc);
-        return true;
-      }
+    if (this.isUsing()) {
+      this.raise(Errors.UsingDeclarationExport, this.state.startLoc);
+      return true;
+    }
 
-      if (this.isAwaitUsing()) {
-        this.raise(Errors.UsingDeclarationExport, this.state.startLoc);
-        return true;
-      }
+    if (this.isAwaitUsing()) {
+      this.raise(Errors.UsingDeclarationExport, this.state.startLoc);
+      return true;
     }
 
     return (

@@ -1,7 +1,7 @@
 {
   "name": "babel",
-  "version": "7.27.7",
-  "version_babel8": "8.0.0-beta.0",
+  "version": "7.28.1",
+  "version_babel8": "8.0.0-beta.1",
   "private": true,
   "type": "commonjs",
   "scripts": {
@@ -74,6 +74,7 @@
     "lint-staged": "^15.2.7",
     "mergeiterator": "^1.4.4",
     "picocolors": "^1.0.0",
+    "pkg-pr-new": "^0.0.54",
     "prettier": "^3.5.2",
     "rollup": "^4.18.0",
     "rollup-plugin-dts": "patch:rollup-plugin-dts@npm%3A6.1.0#~/.yarn/patches/rollup-plugin-dts-npm-6.1.0-6d41e665a7.patch",
@@ -96,7 +97,7 @@
   "resolutions": {
     "browserslist": "npm:4.24.4",
     "caniuse-lite": "npm:1.0.30001705",
-    "core-js-compat": "npm:3.41.0",
+    "core-js-compat": "npm:3.43.0",
     "electron-to-chromium": "npm:1.5.140",
     "@types/babel__core": "link:./nope",
     "@types/babel__traverse": "link:./nope",

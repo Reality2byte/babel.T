@@ -44,12 +44,14 @@ export default declare(api => {
 
         // Do expression within function parameter lists
         let foundDoExpression = false;
-        const deferredPatterns: (t.LVal | t.PatternLike)[] = [];
+        const deferredPatterns: t.PatternLike[] = [];
         const deferredTemps: t.Identifier[] = [];
         for (const param of path.get("params")) {
           const actualParam = param.isRestElement()
             ? param.get("argument")
-            : param;
+            : param.isTSParameterProperty()
+              ? param.get("parameter")
+              : param;
           foundDoExpression ||= doAncestors.has(actualParam.node);
           if (foundDoExpression && !isLValSideEffectFree(actualParam)) {
             const pattern = actualParam.node;
